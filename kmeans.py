@@ -2,23 +2,25 @@
 import sys
 from pyspark import SparkContext
 
-def mapToCluster(data, len(means)):
+def mapToCluster(data, means):
 	#data -> a single integer value.
 	#means -> list of the mean values.
 	#return the mean value to which this data point belongs to
-	dist = 100000
-	for i in range(0,5):
-		if dist < abs(data - means[i]):
-			dist = abs(data - means[i])
-				ID = i
-			
+	dist = 20000
+	ID = 0
+	for i in range(0,len(means)):
+		#print(abs(int(data)-int(means[i])))
+		if dist > abs(int(data) - int(means[i])):
+			dist = float(int(data) - int(means[i]))
+			ID = i
+	print(means[ID])		
 	return (means[ID])
 
 def updatemeans(data1, data2):
 	#data1,data2 -> tuple of format (meanvalue, count)
 	#give (avg1, n1), (avg2, n2), new average will be (n1*avg1 + n2*avg2)/(n1+n2)
-	newavg = (datat1[1]*data1[0] + data2[1]*data2[0])/(data1[1]+data2[1])
-	newcount = (data1[1]+data2[1])
+	newavg = ((int(data1[1])*int(data1[0])) + (int(data2[1])*int(data2[0])))/(int(data1[1])+int(data2[1]))
+	newcount = (int(data1[1])+int(data2[1]))
 	return (newavg,newcount)
 
 if __name__ == "__main__":
@@ -50,6 +52,6 @@ if __name__ == "__main__":
 			meansList.append(mi[1][0]) 
 
 	finalclustermap = data.map(lambda p: (mapToCluster(p,meansList),p)).sortByKey()
-	finalclustermap.saveAsTextFile("output");
+	finalclustermap.saveAsTextFile("/auto/rcf-40/bkishore/PA5/output");
 	
 
